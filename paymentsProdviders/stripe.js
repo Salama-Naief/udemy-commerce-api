@@ -130,7 +130,7 @@ const createCardOrder = async (session) => {
 // @access  Protected/User
 export const webhookCheckout = async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
-
+  console.log("sig", sig);
   let event = null;
 
   try {
