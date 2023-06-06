@@ -21,6 +21,12 @@ const port = process.env.PORT || 5000;
 dotenv.config();
 expressAsyncErrors;
 
+// Checkout webhook
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
+);
 //@desc middleware
 app.use(express.json());
 
@@ -30,12 +36,6 @@ app.use(express.static(path.join(__dirname, "uploads")));
 
 //@desc route
 MoundedRoute(app);
-// Checkout webhook
-app.post(
-  "/webhook-checkout",
-  express.raw({ type: "application/json" }),
-  webhookCheckout
-);
 app.use(NotFound);
 //@desc glabal error
 app.use(errorHandlerMiddleware);
