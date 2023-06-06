@@ -23,7 +23,7 @@ export const payWithStripe = async (req, res) => {
         currency: "usd",
         product_data: {
           name: item.product.title,
-          images: [item.product.imageCover],
+          images: [item.product.coverImage],
           description: "ded",
           metadata: {
             id: item.id,
