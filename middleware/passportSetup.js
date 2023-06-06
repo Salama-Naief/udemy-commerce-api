@@ -28,10 +28,9 @@ passport.use(
     },
     async function (req, email, password, done) {
       const { username } = req.body;
-      console.log("body", req.body);
-      console.log("files", req.files);
+
       const existUser = await userModal.findOne({ email: email });
-      console.log("existUser", existUser);
+
       if (existUser) {
         return done(null, false, "this email is already registerd");
       } else {
@@ -40,7 +39,6 @@ passport.use(
           let avatar = "";
           if (req.files && req.files.avatar) {
             avatar = await uploadImages(req.files.avatar);
-            console.log("avatarImage", avatar);
           }
           const newUser = new locaUserModal({
             email,
@@ -73,13 +71,12 @@ passport.use(
       const existUser = await locaUserModal
         .findOne({ email: email })
         .select("+password");
-      console.log("existUser", existUser);
+
       if (!existUser) {
         return done(null, false, "this email is not registerd!");
       } else {
         try {
           const isMatch = await existUser.comparePassword(password);
-          console.log("isMatch", isMatch);
           if (!isMatch) {
             return done(null, false, "wrong password!");
           }

@@ -52,7 +52,6 @@ export const createCart = async (req, res) => {
         price: product.price,
       });
     }
-    console.log(itemIndex);
   } else {
     cart = await cartModel({
       cartItems: [

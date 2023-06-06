@@ -1,8 +1,8 @@
 import orderModel from "../models/order.model.js";
 import cartModel from "../models/cart.model.js";
 import productModel from "../models/product.model.js";
-
-import { deleteOne, updateOne, getOne, getList } from "./handler-factory.js";
+import updateProdutAfterOrder from "../utils/updateProductAfterOrder.js";
+import { deleteOne, getOne, getList } from "./handler-factory.js";
 import { ApiError, NotFoundError } from "../errors/index.js";
 
 //@desc create cash order
@@ -33,13 +33,7 @@ export const createCashOrder = async (req, res) => {
     throw new ApiError("something went wrong,please try again!");
   }
   //4) update product quantity and numOfSales
-  const bulkWriteOp = cart.cartItems.map((item) => ({
-    updateOne: {
-      filter: { _id: item.product },
-      update: { $inc: { quantity: -item.quantity, nomOfSales: item.quantity } },
-    },
-  }));
-  await productModel.bulkWrite(bulkWriteOp, {});
+  updateProdutAfterOrder(cart);
   //5) clear cartItems
   await cartModel.findOneAndDelete({ user: req.user.userId });
   await order.save();

@@ -31,12 +31,10 @@ export const createReviewValidation = [
       if (!product) {
         throw new NotFoundError(`product with id =${val} is not found!`);
       }
-      console.log("review");
       const review = await reviewModel.findOne({
         user: req.user.userId,
         product: val,
       });
-      console.log("review", review);
       if (review) {
         throw new BadRequestError("you can add only one review the product");
       }
@@ -56,7 +54,7 @@ export const updateReviewValidation = [
       if (!review) {
         throw new NotFoundError(`review with id =${val} is not found!`);
       }
-      console.log("review", review);
+
       if (review.user._id.toString() !== req.user.userId.toString()) {
         throw new PermissionsError("you can update only your review");
       }

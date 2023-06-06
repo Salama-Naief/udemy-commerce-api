@@ -12,7 +12,7 @@ export const addAddressValidation = [
       const existAlais = user.addresses.find(
         (address) => address.alias === val
       );
-      console.log("existAlais", existAlais);
+
       if (existAlais) {
         throw new BadRequestError("this alias is used, please use anther one");
       }

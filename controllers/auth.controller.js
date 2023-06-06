@@ -20,12 +20,11 @@ export const login = async (req, res) => {
   const user = await localUserModel
     .findOne({ email: req.body.email })
     .select("+password");
-  console.log("loged user", user);
+
   if (!user) {
     throw new BadRequestError("invalid email or password");
   }
   const isMatch = await user.isMatchPassword(req.body.password);
-  console.log("isMatch", isMatch);
   if (!isMatch) {
     throw new BadRequestError("invalid email or password");
   }
@@ -48,13 +47,11 @@ export const sendResetCode = async (req, res) => {
 
   //generate reset code
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log("resetCode", resetCode);
   //hash reset code
   const hashResetCode = crypto
     .createHash("sha256")
     .update(resetCode)
     .digest("hex");
-  console.log("hashResetCode", user);
   //save hashed resetCode id db
 
   user.passwordResetCode = hashResetCode;
@@ -76,13 +73,10 @@ export const verifyCode = async (req, res) => {
     .createHash("sha256")
     .update(resetCode)
     .digest("hex");
-  console.log("hashResetCode verify", hashResetCode);
-  console.log("resetcode", resetCode);
   const user = await localUserModel.findOne({
     passwordResetCode: hashResetCode,
     passwordResetCodeExpires: { $gt: Date.now() },
   });
-  console.log("usr", user);
   if (!user) {
     throw new NotFoundError("invalid resetCode or expires!");
   }

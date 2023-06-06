@@ -49,7 +49,6 @@ export const getOne = (Model, populateOpt) => async (req, res) => {
 };
 
 export const createOne = (Model) => async (req, res) => {
-  console.log(req.body);
   const newDocument = await Model.create(req.body);
   newDocument.save();
   res.status(201).json({ data: newDocument });

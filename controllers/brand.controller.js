@@ -15,7 +15,6 @@ export const uploadImage = uploadSingleImage("image");
 
 //@desc change image size and quality
 export const resizeImage = async (req, res, next) => {
-  console.log("req.file", req.file);
   if (req.file) {
     const filename = `brands-${uuidv4()}-${Date.now()}.webp`;
     await sharp(req.file.buffer)

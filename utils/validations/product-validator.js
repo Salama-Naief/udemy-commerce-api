@@ -50,7 +50,6 @@ export const createProductValidator = [
     .withMessage("wrong id formate")
     .custom(async (categoryId) => {
       const cate = await categoryModel.findById(categoryId);
-      console.log("cate", cate);
       if (!cate) {
         throw new Error(`no category found with id=${categoryId}`);
       }
@@ -73,7 +72,6 @@ export const createProductValidator = [
     .withMessage("wrong id formate")
     .custom(async (subcategoryIds, { req }) => {
       const uniqIds = [...new Set(subcategoryIds)];
-      console.log(uniqIds);
       const subcategories = await subcategoryModel.find({
         _id: { $exists: true, $in: uniqIds },
         category: req.body.category,

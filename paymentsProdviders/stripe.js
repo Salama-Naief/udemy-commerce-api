@@ -3,14 +3,14 @@ import cartModel from "../models/cart.model.js";
 import { NotFoundError } from "../errors/index.js";
 import userModel from "../models/user.model.js";
 import orderModel from "../models/order.model.js";
-import productModel from "../models/product.model.js";
+import updateProdutAfterOrder from "../utils/updateProductAfterOrder.js";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const payWithStripe = async (req, res) => {
   // comes from app settings
-  const taxPrice = 0;
-  const shippingPrice = 0;
+  // const taxPrice = 0;
+  // const shippingPrice = 0;
 
   const { cartId } = req.params;
   const cart = await cartModel.findById(cartId);
@@ -112,13 +112,7 @@ const createCardOrder = async (session) => {
 
   // 4) After creating order, decrement product quantity, increment product sold
   if (order) {
-    const bulkOption = cart.cartItems.map((item) => ({
-      updateOne: {
-        filter: { _id: item.product },
-        update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
-      },
-    }));
-    await productModel.bulkWrite(bulkOption, {});
+    updateProdutAfterOrder(cart);
 
     // 5) Clear cart depend on cartId
     await cartModel.findByIdAndDelete(cartId);
