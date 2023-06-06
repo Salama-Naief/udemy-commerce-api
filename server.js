@@ -11,7 +11,8 @@ import NotFound from "./middleware/not-found.middleware.js";
 import errorHandlerMiddleware from "./middleware/errorHandler.middleware.js";
 
 import MoundedRoute from "./routes/index.js";
-import webhookCheckout from "./routes/order.route.js";
+import { webhookCheckout } from "./paymentsProdviders/stripe.js";
+
 const app = express();
 
 const port = process.env.PORT || 5000;

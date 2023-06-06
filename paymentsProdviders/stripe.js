@@ -13,7 +13,6 @@ export const payWithStripe = async (req, res) => {
   const shippingPrice = 0;
 
   const { cartId } = req.params;
-  console.log(req.body.shippingAddress);
   const cart = await cartModel.findById(cartId);
   if (!cart) {
     throw new NotFoundError(`cart with id:${cartId} is not found!`);
@@ -46,7 +45,6 @@ export const payWithStripe = async (req, res) => {
   //     cart: cart.cartItems,
   //   },
   // });
-  console.log("line_items", line_items);
 
   const session = await stripe.checkout.sessions.create({
     customer_email: req.user.email,
