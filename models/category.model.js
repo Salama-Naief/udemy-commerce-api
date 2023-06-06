@@ -28,8 +28,8 @@ categorySchema.post("init", function (doc) {
 });
 
 //work in create
-categorySchema.post("save", function (doc) {
-  imageURL(doc);
-});
+// categorySchema.post("save", function (doc) {
+//   imageURL(doc);
+// });
 
 export default mongoose.model("Category", categorySchema);

@@ -92,7 +92,7 @@ export const payWithStripe = async (req, res) => {
 const createCardOrder = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
-  const oderPrice = session.amount_total / 100;
+  const orderPrice = session.amount_total / 100;
 
   const cart = await cartModel.findById(cartId);
   const user = await userModel.findOne({ email: session.customer_email });
@@ -102,7 +102,7 @@ const createCardOrder = async (session) => {
     user: user._id,
     cartItems: cart.cartItems,
     shippingAddress,
-    totalOrderPrice: oderPrice,
+    orderPrice: orderPrice,
     isPaid: true,
     paidAt: Date.now(),
     paymentMethodType: "card",
@@ -128,7 +128,6 @@ const createCardOrder = async (session) => {
 // @access  Protected/User
 export const webhookCheckout = async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
-  console.log("sig", sig);
   let event = null;
 
   try {
@@ -137,7 +136,6 @@ export const webhookCheckout = async (req, res, next) => {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
-    console.log("event", event);
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }

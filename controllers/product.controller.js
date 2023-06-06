@@ -30,7 +30,7 @@ export const resizeImages = async (req, res, next) => {
       req.files.images.map(async (img, index) => {
         const imageName = `product-${uuidV4()}-${Date.now()}-${index + 1}-${
           index + 1
-        }.jpeg`;
+        }.webp`;
         await sharp(img.buffer)
           .resize(2000, 1333)
           .toFormat("webp")

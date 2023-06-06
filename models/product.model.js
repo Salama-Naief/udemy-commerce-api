@@ -84,13 +84,13 @@ productSchema.post("init", function (doc) {
 });
 
 //work in create
-productSchema.post("save", function (doc) {
-  this.populate({
-    path: "category",
-    select: "title",
-  });
-  imageURL(doc);
-});
+// productSchema.post("save", function (doc) {
+//   this.populate({
+//     path: "category",
+//     select: "title",
+//   });
+//   imageURL(doc);
+// });
 
 //populate of reviews
 productSchema.virtual("reviews", {

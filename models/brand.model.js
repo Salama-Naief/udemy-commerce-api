@@ -28,8 +28,8 @@ brandSchema.post("init", function (doc) {
 });
 
 //work in create
-brandSchema.post("save", function (doc) {
-  imageURL(doc);
-});
+// brandSchema.post("save", function (doc) {
+//   imageURL(doc);
+// });
 
 export default mongoose.model("Brand", brandSchema);
