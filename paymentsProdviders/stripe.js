@@ -93,6 +93,7 @@ const createCardOrder = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
   const orderPrice = session.amount_total / 100;
+  const shippingPrice = (session.amount_total - session.amount_subtotal) / 100;
 
   const cart = await cartModel.findById(cartId);
   const user = await userModel.findOne({ email: session.customer_email });
@@ -102,7 +103,8 @@ const createCardOrder = async (session) => {
     user: user._id,
     cartItems: cart.cartItems,
     shippingAddress,
-    orderPrice: orderPrice,
+    orderPrice,
+    shippingPrice,
     isPaid: true,
     paidAt: Date.now(),
     paymentMethodType: "card",
