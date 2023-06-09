@@ -100,10 +100,9 @@ export const PayWithPaytabs = async (req, res) => {
 };
 
 export const paytabsWebhooks = async (req, res) => {
-  const sig = req.headers["Signature"];
+  const sig = req.headers["signature"];
   console.log("Signature", sig);
-  console.log("Signature headers", req.headers);
   console.log("Signature body", req.body);
-  paytabs.validatePayment();
+  // paytabs.validatePayment();
   res.send("");
 };
