@@ -12,6 +12,7 @@ import errorHandlerMiddleware from "./middleware/errorHandler.middleware.js";
 
 import MoundedRoute from "./routes/index.js";
 import { webhookCheckout } from "./paymentsProdviders/stripe.js";
+import { paytabsWebhooks } from "./paymentsProdviders/paytabs.js";
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.post(
   express.raw({ type: "application/json" }),
   webhookCheckout
 );
+app.post("/paytabs-webhooks", paytabsWebhooks);
+
 //@desc middleware
 app.use(express.json());
 

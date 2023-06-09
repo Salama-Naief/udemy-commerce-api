@@ -29,7 +29,7 @@ const cartSchema = new Schema({
 cartSchema.pre(/^find/, function (next) {
   this.populate({
     path: "cartItems.product",
-    select: "title rate coverImage imageCover",
+    select: "title rate coverImage imageCover description",
   });
   next();
 });

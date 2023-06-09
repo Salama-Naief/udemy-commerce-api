@@ -2,6 +2,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import localUserModel from "../models/local-user.model.js";
 import { BadRequestError, NotFoundError } from "../errors/index.js";
+import { sendEmail } from "../utils/send-email.js";
 
 //@desc signup
 //@route GET api/auth/signup
@@ -60,6 +61,23 @@ export const sendResetCode = async (req, res) => {
   await user.save();
 
   //send rest code to email
+  try {
+    const message = `Hi ${user.email},\n
+     we recived a request to reset the password on your E-shop Account.
+      \n Enter ${resetCode} `;
+    await sendEmail({
+      email: user.email,
+      subject: "Your password reset code(valid for 10 min)",
+      message,
+    });
+  } catch (error) {
+    console.log("error", error);
+    user.passwordResetCode = undefined;
+    user.passwordResetCodeExpires = undefined;
+    user.passwordResetCodeVerified = false;
+    await user.save();
+    throw new BadRequestError("something went wrong in sending email!");
+  }
   res.status(200).json({ message: "resetCode was sent to your email !" });
 };
 

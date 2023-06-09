@@ -81,8 +81,8 @@ export const payWithStripe = async (req, res) => {
     line_items,
     mode: "payment",
     metadata: req.body.shippingAddress,
-    success_url: `${process.env.FRONTEND_URL}?success=true`,
-    cancel_url: `${process.env.FRONTEND_URL}?canceled=true`,
+    success_url: `${process.env.PAYMENT_SUCCESS_URL}?success=true`,
+    cancel_url: `${process.env.PAYMENT_SUCCESS_URL}?canceled=true`,
     // automatic_tax: { enabled: true },
   });
 

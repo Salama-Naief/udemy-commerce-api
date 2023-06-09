@@ -16,6 +16,8 @@ import {
 
 import { auth, permissions } from "../middleware/protection.middleware.js";
 import { payWithStripe } from "../paymentsProdviders/stripe.js";
+import { payWithPaymob } from "../paymentsProdviders/paymob.js";
+import { PayWithPaytabs } from "../paymentsProdviders/paytabs.js";
 const router = express.Router();
 
 router.use(auth);
@@ -29,6 +31,8 @@ router.patch(
 );
 //stripe checkout session
 router.post("/checkoutsession/:cartId", permissions("user"), payWithStripe);
+router.post("/paymobcheckout/", permissions("user"), payWithPaymob);
+router.post("/paytabscheckout/", permissions("user"), PayWithPaytabs);
 router.get(
   "/:id",
   permissions("user", "admin", "manager"),

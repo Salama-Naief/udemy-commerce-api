@@ -46,6 +46,7 @@ export const auth = async (req, res, next) => {
     email: currentUser.email,
     role: currentUser.role,
     name: currentUser.name,
+    phone: currentUser.phone,
   };
   next();
 };
