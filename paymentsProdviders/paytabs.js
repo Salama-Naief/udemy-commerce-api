@@ -99,8 +99,7 @@ export const PayWithPaytabs = async (req, res) => {
   );
 };
 
-export const paytabsWebhooks = (data) => async (req, res) => {
+export const paytabsWebhooks = async (req, res) => {
   console.log("paytabsWebhooks req", req);
   console.log("paytabsWebhooks res", res);
-  console.log("paytabsWebhooks data", data);
 };
