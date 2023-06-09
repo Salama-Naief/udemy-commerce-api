@@ -68,10 +68,10 @@ export const PayWithPaytabs = async (req, res) => {
   let shipping_address = customer_details;
 
   let url = {
-    callback: `${process.env.BASE_URL}/paytabs-webhooks`,
+    //  callback: `${process.env.BASE_URL}/paytabs-webhooks`,
     response: process.env.PAYMENT_SUCCESS_URL,
   };
-  let response_URLs = [url.response, url.callback];
+  let response_URLs = [url.response /*url.callback*/];
 
   let lang = "ar";
 
@@ -100,6 +100,7 @@ export const PayWithPaytabs = async (req, res) => {
 };
 
 export const paytabsWebhooks = async (req, res) => {
-  console.log("paytabsWebhooks req", req);
-  console.log("paytabsWebhooks res", res);
+  const sig = req.headers["Signature"];
+  console.log("Signature", sig);
+  res.send("");
 };

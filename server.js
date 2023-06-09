@@ -28,10 +28,14 @@ app.post(
   express.raw({ type: "application/json" }),
   webhookCheckout
 );
+app.post(
+  "/paytabs-webhooks",
+  express.raw({ type: "application/json" }),
+  paytabsWebhooks
+);
 
 //@desc middleware
 app.use(express.json());
-app.post("/paytabs-webhooks", paytabsWebhooks);
 
 //@desc serve static files this work in es6 module
 const __dirname = dirname(fileURLToPath(import.meta.url));
