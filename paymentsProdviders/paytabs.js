@@ -2,6 +2,8 @@ import paytabs from "paytabs_pt2";
 import cartModel from "../models/cart.model.js";
 import { NotFoundError } from "../errors/index.js";
 import userModel from "../models/user.model.js";
+import updateProdutAfterOrder from "../utils/updateProductAfterOrder.js";
+import orderModel from "../models/order.model.js";
 
 export const PayWithPaytabs = async (req, res) => {
   //paytabs configrations
@@ -100,6 +102,38 @@ export const PayWithPaytabs = async (req, res) => {
   );
 };
 
+//function that create order
+const createCardOrder = async (data) => {
+  const cartId = data.cart_id;
+  const shippingAddress = {
+    details: data.customer_details.street1,
+    city: data.customer_details.city,
+    postalCode: data.customer_details.zip,
+    phone: data.customer_details.phone,
+  };
+  const orderPrice = data.tran_total;
+  const cart = await cartModel.findById(cartId);
+  const user = await userModel.findOne({ email: data.customer_details.email });
+
+  // 3) Create order with default paymentMethodType card
+  const order = await orderModel.create({
+    user: user._id,
+    cartItems: cart.cartItems,
+    shippingAddress,
+    orderPrice,
+    isPaid: true,
+    paidAt: Date.now(),
+    paymentMethodType: "card",
+  });
+
+  // 4) After creating order, decrement product quantity, increment product sold
+  if (order) {
+    updateProdutAfterOrder(cart);
+
+    // 5) Clear cart depend on cartId
+    await cartModel.findByIdAndDelete(cartId);
+  }
+};
 export const paytabsWebhooks = async (req, res) => {
   const sig = req.headers["signature"];
   console.log("Signature", sig);
@@ -112,26 +146,7 @@ export const paytabsWebhooks = async (req, res) => {
         .status(400)
         .json({ message: "something went wrong in the payment!" });
     } else {
-      const cart = await cartModel.findById(req.body.cart_id);
-      if (!cart) {
-        return res.status(404).json({ message: "cart is not found!" });
-      }
-      const user = await userModel.findOne({
-        email: req.body.customer_details.email,
-      });
-      if (!user) {
-        return res.status(404).json({ message: "user is not found!" });
-      }
-      const shipping_address = {
-        details: req.body.customer_details.street1,
-        city: req.body.customer_details.city,
-        postalCode: req.body.customer_details.zip,
-        phone: req.body.customer_details.phone,
-      };
-      console.log("true");
-      console.log("cart", cart);
-      console.log("cart", cart);
-      console.log("shipping_address", shipping_address);
+      createCardOrder(req.body);
     }
   }
   paytabs.validatePayment(req.body.tran_ref, verifyPayment);
