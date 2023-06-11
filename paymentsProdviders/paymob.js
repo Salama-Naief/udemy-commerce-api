@@ -38,57 +38,108 @@ const stepTwo = async (token, req, res) => {
     quantity: item.quantity,
   }));
 
-  // const orderData = {
-  //   auth_token: token,
-  //   delivery_needed: "false",
-  //   amount_cents: orderPrice * 100,
-  //   currency: "EGP",
-  //   merchant_order_id: cart._id,
-  //   items: cart.cartItems,
-  //   // shipping_data: shippingAddress,
-  // };
-
-  console.log(items);
   const orderData = {
     auth_token: token,
     delivery_needed: "false",
     amount_cents: orderPrice * 100,
     currency: "EGP",
-    merchant_order_id: 8,
-    items: items,
-    shipping_data: {
-      apartment: "803",
-      email: "claudette09@exa.com",
-      floor: "42",
-      first_name: "Clifford",
-      street: "Ethan Land",
-      building: "8028",
-      phone_number: "+86(8)9135210487",
-      postal_code: "01898",
-      extra_description: "8 Ram , 128 Giga",
-      city: "Jaskolskiburgh",
-      country: "CR",
-      last_name: "Nicolas",
-      state: "Utah",
-    },
+    // merchant_order_id: cart._id,
+    items: cart.cartItems,
+    shipping_data: shippingAddress,
   };
+
+  console.log(items);
+  // const orderData = {
+  //   auth_token: token,
+  //   delivery_needed: "false",
+  //   amount_cents: orderPrice * 100,
+  //   currency: "EGP",
+  //   items: items,
+  //   shipping_data: {
+  //     apartment: "803",
+  //     email: "claudette09@exa.com",
+  //     floor: "42",
+  //     first_name: "Clifford",
+  //     street: "Ethan Land",
+  //     building: "8028",
+  //     phone_number: "+86(8)9135210487",
+  //     postal_code: "01898",
+  //     extra_description: "8 Ram , 128 Giga",
+  //     city: "Jaskolskiburgh",
+  //     country: "CR",
+  //     last_name: "Nicolas",
+  //     state: "Utah",
+  //   },
+  // };
+  // const orderData = {
+  //   auth_token: token,
+  //   delivery_needed: "false",
+  //   amount_cents: "100",
+  //   currency: "EGP",
+  //   //merchant_order_id: 9,
+  //   items: [
+  //     {
+  //       name: "ASC1515",
+  //       amount_cents: "500000",
+  //       description: "Smart Watch",
+  //       quantity: "1",
+  //     },
+  //     {
+  //       name: "ERT6565",
+  //       amount_cents: "200000",
+  //       description: "Power Bank",
+  //       quantity: "1",
+  //     },
+  //   ],
+  //   shipping_data: {
+  //     apartment: "803",
+  //     email: "claudette09@exa.com",
+  //     floor: "42",
+  //     first_name: "Clifford",
+  //     street: "Ethan Land",
+  //     building: "8028",
+  //     phone_number: "+86(8)9135210487",
+  //     postal_code: "01898",
+  //     extra_description: "8 Ram , 128 Giga",
+  //     city: "Jaskolskiburgh",
+  //     country: "CR",
+  //     last_name: "Nicolas",
+  //     state: "Utah",
+  //   },
+  //   shipping_details: {
+  //     notes: " test",
+  //     number_of_packages: 1,
+  //     weight: 1,
+  //     weight_unit: "Kilogram",
+  //     length: 1,
+  //     width: 1,
+  //     height: 1,
+  //     contents: "product of some sorts",
+  //   },
+  // };
+  try {
+    const { data } = await axios.post(
+      "https://accept.paymob.com/api/ecommerce/orders",
+      orderData
+    );
+    stepThree(token, data.id, orderPrice, req, res);
+  } catch (error) {
+    return res.json({ massage: error });
+  }
   console.log(orderData);
-  const response = await fetch(
-    "https://accept.paymob.com/api/ecommerce/orders",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(orderData),
-    }
-  );
+  // const response = await fetch(
+  //   "https://accept.paymob.com/api/ecommerce/orders",
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify(orderData),
+  //   }
+  // );
 
-  const data = await response.json();
-  console.log("response steptwo", await response.json());
+  // const data = await response.json();
+  // console.log("response steptwo", await response.json());
 
-  console.log("data steptwo", data);
-  //stepThree(token, data.id, orderPrice, req, res);
+  // console.log("data steptwo", data);
+  // stepThree(token, data.id, orderPrice, req, res);
 };
 
 const stepThree = async (token, id, orderPrice, req, res) => {
@@ -106,7 +157,7 @@ const stepThree = async (token, id, orderPrice, req, res) => {
       first_name: req.user.name,
       street: "NA",
       building: "NA",
-      phone_number: req.user.phone,
+      phone_number: req.body.shippingAddress.phone,
       shipping_method: "NA",
       postal_code: "NA",
       city: "NA",
@@ -115,7 +166,7 @@ const stepThree = async (token, id, orderPrice, req, res) => {
       state: "NA",
     },
     currency: "EGP",
-    integration_id: 1,
+    integration_id: process.env.PAYMOB_PAYMENT_ID,
     lock_order_when_paid: "false",
   };
 
